@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <title>Chat Socket.IO</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="py-5 text-center">Простой чат (Node.js, Express, Socket.IO, Bootstrap, JQuery)</h2>
+        <div class="row">
+            <div class="col-6">
+                <h3>Форма сообщений</h3>
+                <form id="messForm">
+                    <label for="name">Имя</label>
+                    <input type="text" name="name" id="name" placeholder="Введите имя" class="form-control">
+                    <br>
+                    <label for="message">Сообщение</label>
+                    <textarea name="message" id="message" class="form-control"
+                        placeholder="Введите сообщение"></textarea>
+                    <br>
+                    <input type="submit" value="Отправить" class="btn btn-danger">
+                </form>
+            </div>
+
+            <div class="col-6">
+                <h3>Сообщения</h3>
+                <div id="all_mess"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(function () {
+            var socket = io.connect();
+
+            var $form = $("#messForm");
+            var $name = $("#name");
+            var $textarea = $("#message");
+            var $allMessages = $("#all_mess");
+
+            $form.submit(function (event) {
+                event.preventDefault();
+                socket.emit('send mess', { mess: $textarea.val(), name: $name.val() });
+                $textarea.val('');
+            });
+
+            socket.on('add mess', function (data) {
+                $allMessages.append("<div><b>" + data.name + "</b>:" + data.mess + "</div>");
+            });
+        });
+    </script>
+</body>
+
+</html>
